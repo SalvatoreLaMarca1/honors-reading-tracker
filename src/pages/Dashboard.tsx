@@ -1,11 +1,11 @@
 
-import YearlyProgress from '../components/YearlyProgress'
+
 import "../styles/Dashboard.css"
 
 function Dashboard() {
   return (
     <div className="holder">
-      <YearlyProgress/>
+      {/* <YearlyProgress/> */}
 
       
     </div>
