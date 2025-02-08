@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react'
 
-import "../styles/YearlyProgress.css"
+import "../App.css"
 import { getData, User } from '../firebase'
 
 function YearlyProgress() {
 
-  const numberOfElements = 5
+  //const numberOfElements = 5
   
   // Create an array of elements (could be any JSX elements)
-  const elements = Array.from({ length: numberOfElements }, (_, i) => (
-    <div className='circle' key={i}>{i + 1}</div>
+  // const elements = Array.from({ length: numberOfElements }, (_, i) => (
+  //   <div className='circle' key={i}>{i + 1}</div>
     
-  ));
+  // ));
 
-  return <div className="container">{elements}</div>;
+  return <div className="progress-box"></div>;
 }
 export function UserList() {
   const [users, setUsers] = useState<User[]>([]);

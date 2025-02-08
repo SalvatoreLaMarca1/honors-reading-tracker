@@ -97,7 +97,7 @@ export default function CreateAccount() {
 
             <div style={{width: 300}} className="button-cluster">
 
-                <Link to="/login">
+                <Link to="/honors-reading-tracker/login">
                      <button type="button" className="btn btn-primary btn-sm">Already have an account?</button>
                 </Link>
 

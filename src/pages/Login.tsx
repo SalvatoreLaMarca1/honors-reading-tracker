@@ -16,7 +16,7 @@ export default function Login() {
     const isValidUser = (email: string, password: string) => {
         if(email === "paslamarca@gmail.com" && password === "1234") {
             //alert("Login successful!")
-            navigate('/dashboard')
+            navigate('/honors-reading-tracker/dashboard')
             //getData()
         }
         else
@@ -44,7 +44,7 @@ export default function Login() {
 
             <div className="button-cluster">
 
-                <Link to="/create-account">
+                <Link to="/honors-reading-tracker/create-account">
                     <button type="button" className="btn btn-primary btn-sm">Sign Up</button>
                 </Link>
 

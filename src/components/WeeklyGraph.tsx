@@ -3,7 +3,7 @@ function WeeklyGraph() {
 
 
     return (
-        <div>
+        <div className="weekly-graph-box">
             
         </div>
     )

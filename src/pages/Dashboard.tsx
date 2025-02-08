@@ -1,11 +1,17 @@
 
-
+import WeeklyGraph from "../components/WeeklyGraph"
+import ActionBar from "../components/ActionBar"
 import "../styles/Dashboard.css"
+import YearlyProgress from "../components/YearlyProgress"
 
 function Dashboard() {
   return (
-    <div className="holder">
-      {/* <YearlyProgress/> */}
+    <div className="dasboard-div">
+      
+      <YearlyProgress/>
+      <WeeklyGraph/>
+      <ActionBar/>
+
 
       
     </div>
