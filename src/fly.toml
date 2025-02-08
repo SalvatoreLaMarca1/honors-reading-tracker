@@ -1,0 +1,7 @@
+[
+mounts
+]
+
+source = "pg_data"
+
+destination = "/var/lib/postgresql/data"
