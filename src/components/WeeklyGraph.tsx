@@ -1,10 +1,11 @@
 
-function WeeklyGraph() {
+import LineChart from './LineChart';
 
+function WeeklyGraph() {
 
     return (
         <div className="weekly-graph-box">
-            
+            <LineChart/>
         </div>
     )
 }
