@@ -45,4 +45,4 @@ export const getData = async (): Promise<User[]> => {
 }
 
 // Call the function now
-getData();
+//getData();
