@@ -30,14 +30,14 @@ export default function Login() {
 
             <div className='form-group'>
                 <label className="text">Email</label>
-                <input id="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="form-control" placeholder='Enter email'></input>
+                <input id="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="form-control input" placeholder='Enter email'></input>
             </div>
 
             <div className="spacer"/>
 
             <div className='form-group'>
                 <label className="text">Password</label>
-                <input id="password" value={password} onChange={(e) => setPassword(e.target.value)} type='password' className='form-control' placeholder='Enter password'></input>
+                <input id="password" value={password} onChange={(e) => setPassword(e.target.value)} type='password' className='form-control input' placeholder='Enter password'></input>
             </div>
 
             <div className='spacer'/>
@@ -45,11 +45,11 @@ export default function Login() {
             <div className="button-cluster">
 
                 <Link to="/honors-reading-tracker/create-account">
-                    <button type="button" className="btn btn-primary btn-sm">Sign Up</button>
+                    <button type="button" className="btn btn-primary btn-sm sButton">Sign Up</button>
                 </Link>
 
                 
-                <button type="button" onClick={() => {isValidUser(email, password)}} className="btn btn-primary btn-sm">Log in</button>
+                <button type="button" onClick={() => {isValidUser(email, password)}} className="btn btn-primary btn-sm sButton">Log in</button>
             </div>
         </form>
     )

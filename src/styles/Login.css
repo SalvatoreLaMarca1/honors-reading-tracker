@@ -1,10 +1,10 @@
 
 h1 {
-    color:black !important;
+    color: #DCD7C9 !important;
 }
 
 .text {
-    color:black;
+    color: #DCD7C9;
     width:fit-content;
 }
 
@@ -15,7 +15,7 @@ h1 {
 .login-holder {
     width: 400px;
     height: fit-content;
-    background-color: burlywood;
+    background-color: #A27B5C;
     text-align: left;
     padding: 20px;
     padding-top: 10px;
@@ -24,7 +24,7 @@ h1 {
 .login-cluster {
     width: 300px;
     height: 300px;
-    background-color: tan;
+    background-color: #A27B5C;
     margin-left: 10px;
     margin-top: 10px;
     text-align: left;
@@ -42,4 +42,25 @@ h1 {
 
 .spacer {
     height: 15px;
+}
+
+
+.input {
+    background-color: #DCD7C9;
+}
+
+.sButton {
+    background-color: #3F4E4F;
+    border-color: #3F4E4F;
+    color: #DCD7C9;
+}
+.sButton:hover {
+    background-color: #DCD7C9;
+    border-color: #DCD7C9;
+    color:#3F4E4F
+}
+
+.sButton:focus {
+    background-color: #3F4E4F !important;
+    border-color: #3F4E4F !important;
 }

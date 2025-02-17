@@ -74,14 +74,14 @@ export default function CreateAccount() {
 
             <div className='form-group'>
                 <label className="text">Email</label>
-                <input type="email" onChange = {(e) => setEmail(e.target.value)} className="form-control" placeholder='Enter email'></input>
+                <input type="email" onChange = {(e) => setEmail(e.target.value)} className="form-control input" placeholder='Enter email'></input>
             </div>
 
             <div className="spacer"/>
 
             <div className='form-group'>
                 <label className="text">Password</label>
-                <input type='password' onChange={(e) => passwordFunctions(e.target.value)} className='form-control' placeholder='Enter password'></input>
+                <input type='password' onChange={(e) => passwordFunctions(e.target.value)} className='form-control input' placeholder='Enter password'></input>
                 <div style={{display: 'flex', flexDirection: 'column'}}>
 
                     <ul className ="password-requirements">

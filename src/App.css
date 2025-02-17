@@ -3,11 +3,14 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  
 }
 
 
 
-
+body {
+  background-color: #2C3639;
+}
 
 
 /* Dashboard CSS */
@@ -21,7 +24,7 @@
 
 /* YearlyProgress CSS */
 .progress-box {
-  background-color: burlywood;
+  background-color: #A27B5C;
   width: 400px;
   height: max-content;
   min-height: 100px;
@@ -33,7 +36,7 @@
 .weekly-graph-box {
   width: 400px;
   height: max-content;
-  background-color: burlywood;
+  background-color: #A27B5C;
 
   border-radius: 15px;
 }
