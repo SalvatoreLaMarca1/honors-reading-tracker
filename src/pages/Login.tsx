@@ -1,13 +1,13 @@
 
-import "../styles/Login.css"
 import {useState} from 'react';
-
-//import 'bootstrap/dist/css/bootstrap.css';
-
+import "../styles/Login.css"
 import { Link, useNavigate } from 'react-router-dom';
-//import { getData } from "../firebase";
+import { getUsers} from '../supabase';
 
 export default function Login() {
+
+    getUsers();
+
     const navigate = useNavigate()
     
     const [email, setEmail] = useState("");
