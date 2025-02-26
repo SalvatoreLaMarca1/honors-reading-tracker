@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link } from 'react-router-dom';
+import { signUp } from '../supabase';
 
 
 export default function CreateAccount() {
@@ -50,7 +51,7 @@ export default function CreateAccount() {
         
     }
 
-    const isValidAccount = () => {
+    const isValidAccount = (email: string, password: string) => {
         // check for email validation???
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -63,8 +64,11 @@ export default function CreateAccount() {
 
         // check if password follows rules
         if(!(s && u && n)) alert("Invalid password")
-            
-        return s && u && n && e;
+
+        if(s && u && n && e) {
+            // createAccount(email, password)
+            signUp(email, password)
+        }
     }
 
 
@@ -102,7 +106,7 @@ export default function CreateAccount() {
                 </Link>
 
                
-                <button type='button' onClick={() => isValidAccount()} className="btn btn-primary btn-sm">Create Account</button>
+                <button type='button' onClick={() => isValidAccount(email, password)} className="btn btn-primary btn-sm">Create Account</button>
             </div>
         </form>
     )

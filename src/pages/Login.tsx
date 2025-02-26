@@ -2,25 +2,34 @@
 import {useState} from 'react';
 import "../styles/Login.css"
 import { Link, useNavigate } from 'react-router-dom';
-import { getUsers} from '../supabase';
+import { signIn} from '../supabase';
 
 export default function Login() {
 
-    getUsers();
+
 
     const navigate = useNavigate()
     
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const isValidUser = (email: string, password: string) => {
-        if(email === "paslamarca@gmail.com" && password === "1234") {
-            //alert("Login successful!")
-            navigate('/honors-reading-tracker/dashboard')
-            //getData()
+    const isValidUser = async (email: string, password: string) => {
+
+        try {
+            //const check = await checkCredentials(email, password)
+
+            const check = await signIn(email, password)
+
+            if(check) {
+                navigate('/honors-reading-tracker/dashboard')
+            }
+            else
+                alert("Invalid credentials")
+
+        } catch (error) {
+            console.error("Error checking credentials:", error);
+            alert("Something went wrong. Please try again.");
         }
-        else
-            alert("Invalid credentials")
     }
 
     return (
