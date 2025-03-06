@@ -6,16 +6,14 @@
   
 }
 
-
-
 body {
   background-color: #2C3639;
 }
 
-
 /* Dashboard CSS */
 .dasboard-div {
   height: max-content;
+  width: max-content;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -46,4 +44,10 @@ body {
   width: 170px;
   justify-content: space-between;
   display: flex ; 
+}
+
+.read-button-cluster {
+  width: 200px;
+  justify-content:space-between;
+  display: flex;
 }
