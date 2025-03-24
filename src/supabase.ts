@@ -114,3 +114,147 @@ export function getUser() {
     console.log(data)
     return data
 }
+
+
+// Getting Book information
+
+
+export async function getAllBooks() {
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (!user) {
+      return []
+    }
+    
+    const { data, error } = await supabase
+      .from('Books')
+      .select('*')
+      .eq('user_id', user.id)
+    
+    if (error) {
+      console.error('Error fetching books:', error)
+      return []
+    }
+    
+    return data
+  }
+
+
+  interface BookData {
+    title: string;
+    author: string;
+    number_of_pages: number;
+  }
+  
+  interface Book extends BookData {
+    book_id: number;
+    created_at: string;
+    user_id: string;
+  }
+
+
+  
+  export async function createBook(bookData: BookData): Promise<Book | null> {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error('You must be logged in to create a book');
+    }
+    
+    // Prepare the book data with the current user's ID
+    const newBook = {
+      ...bookData,
+      user_id: user.id
+    };
+    
+    // Insert the book into the Books table
+    const { data, error } = await supabase
+      .from('Books')
+      .insert([newBook])
+      .select();
+    
+    if (error) {
+      console.error('Error creating book:', error);
+      throw error;
+    }
+    
+    return data?.[0] || null;
+  }
+
+
+
+  export const addBook = async (bookData: { 
+    title: string; 
+    author: string; 
+    number_of_pages: number 
+  }) => {
+    try {
+      // Get the current user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error("No authenticated user found");
+      }
+      
+      console.log("Attempting to insert book with user_id:", user.id);
+      
+      const { data, error } = await supabase
+        .from('Books')
+        .insert([{
+          title: bookData.title,
+          author: bookData.author,
+          number_of_pages: bookData.number_of_pages,
+          pages_read: 0,
+          minutes_read: 0,
+          user_id: user.id,
+          created_at: new Date().toISOString() // Add this if your table expects it
+        }])
+        
+      if (error) {
+        console.error("Supabase error details:", error);
+        throw error;
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error adding book:', error);
+      throw error;
+    }
+  };
+
+  // Add this to your supabase.ts file
+
+export const updateBookReadingTime = async (bookId: number, additionalMinutes: number) => {
+    try {
+      // First get the current book data
+      const { data: bookData, error: fetchError } = await supabase
+        .from('Books')
+        .select('minutes_read')
+        .eq('book_id', bookId)
+        .single();
+        
+      if (fetchError) {
+        throw fetchError;
+      }
+      
+      // Calculate new total minutes
+      const currentMinutes = bookData.minutes_read || 0;
+      const newTotalMinutes = currentMinutes + additionalMinutes;
+      
+      // Update the book with new minutes read
+      const { data, error } = await supabase
+        .from('Books')
+        .update({ minutes_read: newTotalMinutes })
+        .eq('book_id', bookId)
+        .select();
+        
+      if (error) {
+        throw error;
+      }
+      
+      return data;
+    } catch (error) {
+      console.error('Error updating reading time:', error);
+      throw error;
+    }
+  };

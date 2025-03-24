@@ -1,5 +1,5 @@
 
-
+import LandingPage from './pages/LandingPage'
 import CreateAccount from './pages/CreateAccount'
 import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
@@ -12,7 +12,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/honors-reading-tracker" element={<Login/>} />
+        <Route path="/honors-reading-tracker" element={<LandingPage/>} />
         <Route path="/honors-reading-tracker/login" element={<Login/>} />
         <Route path="/honors-reading-tracker/create-account" element={<CreateAccount/>} />
         <Route path="/honors-reading-tracker/dashboard" element={<Dashboard/>} />

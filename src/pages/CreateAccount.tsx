@@ -102,11 +102,11 @@ export default function CreateAccount() {
             <div style={{width: 300}} className="button-cluster">
 
                 <Link to="/honors-reading-tracker/login">
-                     <button type="button" className="btn btn-primary btn-sm">Already have an account?</button>
+                     <button type="button" className="btn btn-primary btn-sm sButton">Already have an account?</button>
                 </Link>
 
                
-                <button type='button' onClick={() => isValidAccount(email, password)} className="btn btn-primary btn-sm">Create Account</button>
+                <button type='button' onClick={() => isValidAccount(email, password)} className="btn btn-primary btn-sm sButton">Create Account</button>
             </div>
         </form>
     )
