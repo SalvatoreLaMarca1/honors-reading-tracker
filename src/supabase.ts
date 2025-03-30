@@ -224,37 +224,84 @@ export async function getAllBooks() {
 
   // Add this to your supabase.ts file
 
-export const updateBookReadingTime = async (bookId: number, additionalMinutes: number) => {
+  export const updateBookReadingTime = async (bookId: number, additionalMinutes: number) => {
     try {
-      // First get the current book data
+      // Get the current authenticated user
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        throw new Error('No authenticated user found');
+      }
+      
+      const userId = user.id;
+      
+      // First get the current book data, ensuring it belongs to the current user
       const { data: bookData, error: fetchError } = await supabase
         .from('Books')
         .select('minutes_read')
         .eq('book_id', bookId)
+        .eq('user_id', userId)  // Filter by user_id to ensure ownership
         .single();
-        
+       
       if (fetchError) {
         throw fetchError;
       }
       
+      // If no book found, it means the book doesn't exist or doesn't belong to this user
+      if (!bookData) {
+        throw new Error('Book not found or not owned by current user');
+      }
+     
       // Calculate new total minutes
       const currentMinutes = bookData.minutes_read || 0;
       const newTotalMinutes = currentMinutes + additionalMinutes;
-      
-      // Update the book with new minutes read
+     
+      // Update the book with new minutes read, still ensuring user ownership
       const { data, error } = await supabase
         .from('Books')
         .update({ minutes_read: newTotalMinutes })
         .eq('book_id', bookId)
+        .eq('user_id', userId)  // Again filter by user_id for security
         .select();
-        
+       
       if (error) {
         throw error;
       }
-      
+     
       return data;
     } catch (error) {
       console.error('Error updating reading time:', error);
       throw error;
     }
   };
+
+  export const addEntry = async (bookId: number, minutesRead: number, pagesRead: number) => {
+
+      // Get the current authenticated user
+      const { data: { user } } = await supabase.auth.getUser();
+      console.log(user)
+      
+      if (!user) {
+        throw new Error('No authenticated user found');
+      }
+      
+      const userId = user.id;
+
+      const { data, error } = await supabase
+        .from('Entries')
+        .insert([
+          {
+            book_id: bookId,
+            user_id: userId,
+            minutes_read: minutesRead,
+            pages_read: pagesRead
+          }
+        ])
+        
+      if (error) {
+        console.error("Error inserting entry: ", error)
+      }
+
+      return data;
+    
+  }

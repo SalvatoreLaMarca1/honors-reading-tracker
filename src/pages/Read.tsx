@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from 'react-bootstrap';
-import { getAllBooks, updateBookReadingTime } from "../supabase"; // Adjust import path as needed
+import { addEntry, getAllBooks, updateBookReadingTime } from "../supabase"; // Adjust import path as needed
+import PagesReadModal from "../components/PagesReadModal"; // Adjust import path as needed
 
 interface Book {
   book_id: number;
@@ -23,6 +24,9 @@ function Read() {
   const [books, setBooks] = useState<Book[]>([]);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+
+  const [showPagesModal, setShowPagesModal] = useState(false);
 
   // Fetch books when component mounts
   useEffect(() => {
@@ -81,8 +85,38 @@ function Read() {
     // Here you would update the book in the database with the new reading time
     // For example:
     updateBookReadingTime(selectedBook.book_id, minutesRead);
+
+    setShowPagesModal(true);
+
+    // addEntry(selectedBook.book_id, minutesRead, pagesRead);
     
     console.log(`Finished reading "${selectedBook.title}" for ${minutesRead} minutes`);
+    
+  };
+
+  const handlePagesSubmit = (pagesRead: number) => {
+
+    if(!selectedBook) {
+      alert("No book selected!")
+      return
+    }
+
+    
+    // Calculate minutes read (seconds / 60, rounded)
+    const minutesRead = Math.round(seconds / 60);
+    
+    // Update the book in the database with the new reading time and pages
+    updateBookReadingTime(selectedBook.book_id, minutesRead);
+    addEntry(selectedBook.book_id, minutesRead, pagesRead);
+
+    console.log("THIS IS THE PSAGES REASD ", pagesRead)
+    
+    console.log(`Finished reading "${selectedBook.title}" for ${minutesRead} minutes (${pagesRead} pages)`);
+    
+    // Close the modal
+    setShowPagesModal(false);
+    
+    // Navigate to dashboard
     navigate('/honors-reading-tracker/dashboard');
   };
 
@@ -186,6 +220,7 @@ function Read() {
               Finish Reading
             </button>
             
+            
             <button 
               className="btn btn-primary" 
               onClick={toggleTimer}
@@ -211,6 +246,14 @@ function Read() {
           </p>
         </div>
       )}
+
+
+      <PagesReadModal 
+        show={showPagesModal} 
+        handleClose={() => setShowPagesModal(false)} 
+        handleSubmit={handlePagesSubmit}
+      />
+
     </div>
   );
 }

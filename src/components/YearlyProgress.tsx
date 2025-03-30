@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { supabase } from '../supabase';
 // Note: This assumes you have Bootstrap CSS included in your project
 // Either via import 'bootstrap/dist/css/bootstrap.min.css'; or a CDN link
 
@@ -12,6 +13,15 @@ interface MonthLabel {
   month: number;
   position: number;
 }
+
+// interface Entry {
+//   entry_id: number;
+//   created_at: string;
+//   book_id: number;
+//   minutes_read: number;
+//   pages_read: number;
+//   user_id: string;
+// }
 
 const YearlyProgress: React.FC = () => {
   // Generate sample contribution data
@@ -39,6 +49,61 @@ const YearlyProgress: React.FC = () => {
     }
     return data;
   };
+
+  const getEntriesFromLastYear = async () => {
+    // Get the current authenticated user
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
+      console.error('Error fetching user:', authError);
+      return null;
+    }
+  
+    // Get the current date
+    const today = new Date();
+  
+    // Get the start of the last year
+    const startOfLastYear = new Date(today);
+    startOfLastYear.setFullYear(today.getFullYear() - 1);
+    startOfLastYear.setMonth(0); // Set to January (month 0)
+    startOfLastYear.setDate(1); // Set to the 1st of January
+    startOfLastYear.setHours(0, 0, 0, 0); // Set to midnight
+    
+    // Get the end of the last year
+    const endOfLastYear = new Date(startOfLastYear);
+    endOfLastYear.setFullYear(startOfLastYear.getFullYear() + 1); // Set to next year
+    endOfLastYear.setDate(0); // Set to the last day of the previous month (December 31st)
+    endOfLastYear.setHours(23, 59, 59, 999); // Set to end of the day
+  
+    // Convert to ISO string format
+    const startDate = startOfLastYear.toISOString();
+    const endDate = endOfLastYear.toISOString();
+  
+    try {
+      const { data, error } = await supabase
+        .from('Entries')
+        .select('*')
+        .eq('user_id', user.id) // Filter by authenticated user
+        .gte('created_at', startDate) // Entries on or after startDate
+        .lte('created_at', endDate) // Entries on or before endDate
+        .order('created_at', { ascending: false }); // Order by created_at in descending order
+  
+      if (error) {
+        console.error('Error fetching entries:', error);
+        return null;
+      }
+  
+      console.log('Entries from the last year:', data);
+      return data;
+    } catch (error) {
+      console.error('Error fetching entries:', error);
+      return null;
+    }
+  };
+  
+  // Call the function
+  getEntriesFromLastYear();
+
 
   const [contributionData, setContributionData] = useState<Record<string, number>>(generateContributionData());
   const [selectedDay, setSelectedDay] = useState<ContributionDay | null>(null);
