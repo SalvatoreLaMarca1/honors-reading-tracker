@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from 'react-bootstrap';
-import { addEntry, getAllBooks, updateBookReadingTime } from "../supabase"; // Adjust import path as needed
+import { addEntry, getAllBooks } from "../supabase"; // Adjust import path as needed
 import PagesReadModal from "../components/PagesReadModal"; // Adjust import path as needed
 
 interface Book {
@@ -81,10 +81,6 @@ function Read() {
 
     // Calculate minutes read (seconds / 60, rounded)
     const minutesRead = Math.round(seconds / 60);
-    
-    // Here you would update the book in the database with the new reading time
-    // For example:
-    updateBookReadingTime(selectedBook.book_id, minutesRead);
 
     setShowPagesModal(true);
 
@@ -106,7 +102,6 @@ function Read() {
     const minutesRead = Math.round(seconds / 60);
     
     // Update the book in the database with the new reading time and pages
-    updateBookReadingTime(selectedBook.book_id, minutesRead);
     addEntry(selectedBook.book_id, minutesRead, pagesRead);
 
     console.log("THIS IS THE PSAGES REASD ", pagesRead)
@@ -117,7 +112,7 @@ function Read() {
     setShowPagesModal(false);
     
     // Navigate to dashboard
-    navigate('/honors-reading-tracker/dashboard');
+    navigate('/dashboard');
   };
 
   // Format seconds into HH:MM:SS
@@ -164,7 +159,7 @@ function Read() {
               <p>You don't have any books yet.</p>
               <Button 
                 variant="primary" 
-                onClick={() => navigate('/honors-reading-tracker/dashboard')}
+                onClick={() => navigate('/dashboard')}
               >
                 Go Add Some Books
               </Button>
@@ -190,7 +185,7 @@ function Read() {
         <Modal.Footer>
           <Button 
             variant="secondary" 
-            onClick={() => navigate('/honors-reading-tracker/dashboard')}
+            onClick={() => navigate('/dashboard')}
           >
             Cancel
           </Button>

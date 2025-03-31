@@ -131,7 +131,6 @@ const MyBooks: React.FC = () => {
     <div className="holdBooks">
       <div className="px-4 py-5">
         <div className="d-flex justify-content-between align-items-center mb-4 flex-column">
-          <h1>My Books</h1>
           <button 
             className="btn btn-primary"
             onClick={handleShowModal}

@@ -5,7 +5,7 @@ function LandingPage() {
     const navigate = useNavigate();
     
     return (
-        <div className="min-vh-100 d-flex flex-column justify-content-center align-items-center py-5" style={{background: "linear-gradient(to bottom, #e8f0fe, #d0dcf9)"}}>
+        <div className="min-vh-100 d-flex flex-column justify-content-center align-items-center py-5">
             <div className="container">
                 <div className="text-center mb-5">
                     <h1 className="display-3 fw-bold text-primary mb-3">Read Now</h1>
@@ -24,10 +24,10 @@ function LandingPage() {
                                     </p>
                                     
                                     <div className="d-flex flex-column flex-sm-row gap-3">
-                                        <button className="btn btn-primary px-4 py-2" onClick={() => navigate("/honors-reading-tracker/login")}>
+                                        <button className="btn btn-primary px-4 py-2" onClick={() => navigate("/login")}>
                                             Login
                                         </button>
-                                        <button className="btn btn-outline-primary px-4 py-2" onClick={() => navigate("/honors-reading-tracker/create-account")}>
+                                        <button className="btn btn-outline-primary px-4 py-2" onClick={() => navigate("/create-account")}>
                                             Sign Up
                                         </button>
                                     </div>

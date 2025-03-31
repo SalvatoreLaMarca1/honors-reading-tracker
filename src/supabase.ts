@@ -224,7 +224,7 @@ export async function getAllBooks() {
 
   // Add this to your supabase.ts file
 
-  export const updateBookReadingTime = async (bookId: number, additionalMinutes: number) => {
+  export const updateBookData = async (bookId: number, additionalMinutes: number, pagesRead: number) => {
     try {
       // Get the current authenticated user
       const { data: { user } } = await supabase.auth.getUser();
@@ -235,45 +235,45 @@ export async function getAllBooks() {
       
       const userId = user.id;
       
-      // First get the current book data, ensuring it belongs to the current user
+      // Fetch current book data, ensuring it belongs to the current user
       const { data: bookData, error: fetchError } = await supabase
         .from('Books')
-        .select('minutes_read')
+        .select('minutes_read, pages_read') // Removed duplicate .select()
         .eq('book_id', bookId)
-        .eq('user_id', userId)  // Filter by user_id to ensure ownership
+        .eq('user_id', userId)  // Ensure user ownership
         .single();
-       
+      
       if (fetchError) {
         throw fetchError;
       }
       
-      // If no book found, it means the book doesn't exist or doesn't belong to this user
       if (!bookData) {
-        throw new Error('Book not found or not owned by current user');
+        throw new Error('Book not found or not owned by the current user');
       }
-     
-      // Calculate new total minutes
-      const currentMinutes = bookData.minutes_read || 0;
-      const newTotalMinutes = currentMinutes + additionalMinutes;
-     
-      // Update the book with new minutes read, still ensuring user ownership
+  
+      // Calculate new totals
+      const newTotalMinutes = (bookData.minutes_read || 0) + additionalMinutes;
+      const newTotalPages = (bookData.pages_read || 0) + pagesRead;
+  
+      // Update the book in a single query
       const { data, error } = await supabase
         .from('Books')
-        .update({ minutes_read: newTotalMinutes })
+        .update({ minutes_read: newTotalMinutes, pages_read: newTotalPages }) // Update both fields at once
         .eq('book_id', bookId)
-        .eq('user_id', userId)  // Again filter by user_id for security
-        .select();
-       
+        .eq('user_id', userId)
+        .select(); // Fetch the updated data
+      
       if (error) {
         throw error;
       }
-     
+      
       return data;
     } catch (error) {
       console.error('Error updating reading time:', error);
       throw error;
     }
   };
+  
 
   export const addEntry = async (bookId: number, minutesRead: number, pagesRead: number) => {
 
@@ -301,6 +301,9 @@ export async function getAllBooks() {
       if (error) {
         console.error("Error inserting entry: ", error)
       }
+
+      updateBookData(bookId, minutesRead, pagesRead)
+
 
       return data;
     

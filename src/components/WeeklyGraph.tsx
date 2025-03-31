@@ -95,18 +95,27 @@ useEffect(() => {
   }
 }, [weekData]);
 
+const [chartKey, setChartKey] = useState(0);
+
 useEffect(() => {
-  // Update the chartData when minutesByDay changes
   if (Object.keys(minutesByDay).length > 0) {
     const updatedChartData = Object.keys(minutesByDay).map((day) => ({
       day,
       minutes: minutesByDay[day],
-      pages: pagesByDay[day]
+      pages: pagesByDay[day] || 0,
     }));
-
+    
     setChartData(updatedChartData);
+
+    // Force Recharts to recognize change by updating key
+    setChartKey((prev) => prev + 1);
   }
-}, [minutesByDay]);
+}, [minutesByDay, pagesByDay]);
+
+useEffect(() => {
+  const { startDate, endDate } = getWeekDateRange(weekOffset);
+  getWeekData(startDate, endDate);
+}, [weekOffset]);
 
   const getWeekLabel = (offset: number) => {
     const today = new Date();
@@ -163,7 +172,7 @@ useEffect(() => {
     };
   };
 
-  const totalReadingTime = chartData.reduce((sum, item) => sum + item.minutes, 0);
+  // const totalReadingTime = chartData.reduce((sum, item) => sum + item.minutes, 0);
 
   const getWeekStatusText = () => {
     if (weekOffset === 0) return 'Current Week';
@@ -205,81 +214,48 @@ useEffect(() => {
         </div>
         
         <div style={{ height: "300px" }}>
-          {/* <ResponsiveContainer width="100%" height="100%" key={JSON.stringify(chartData)}>
-            <LineChart
-              data={chartData}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="day" />
-              <YAxis domain={yAxisDomain} />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="minutes"
-                stroke="#0d6efd"
-                strokeWidth={2}
-                dot={{ r: 5 }}
-                activeDot={{ r: 8 }}
-              />
-            </LineChart>
-          </ResponsiveContainer> */}
-          <ResponsiveContainer width="100%" height="100%" key={JSON.stringify(chartData)}>
-            <LineChart
-              data={chartData}
-              margin={{
-                top: 5,
-                right: 30,
-                left: 20,
-                bottom: 5,
-              }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="day" />
-              
-              {/* Single Y-axis for both minutes and pages */}
-              <YAxis domain={[0, (dataMax: number) => dataMax * 1.2]} />
-              
-              <Tooltip />
-              <Legend />
-              
-              {/* Line for minutes read */}
-              <Line
-                type="monotone"
-                dataKey="minutes"
-                stroke="#0d6efd"
-                strokeWidth={2}
-                dot={{ r: 5 }}
-                activeDot={{ r: 8 }}
-              />
-              
-              {/* Line for pages read */}
-              <Line
-                type="monotone"
-                dataKey="pages"
-                stroke="#ff7300"
-                strokeWidth={2}
-                dot={{ r: 5 }}
-                activeDot={{ r: 8 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-
-
+          
+            <ResponsiveContainer width="100%" height="100%" key={chartKey}>
+              <LineChart
+                data={chartData}
+                margin={{
+                  top: 5,
+                  right: 30,
+                  left: 20,
+                  bottom: 5,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="day" />
+                <YAxis domain={[0, (dataMax: number) => dataMax * 1.2]} />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="minutes"
+                  stroke="#0d6efd"
+                  strokeWidth={2}
+                  dot={{ r: 5 }}
+                  activeDot={{ r: 8 }}
+                  isAnimationActive={true}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="pages"
+                  stroke="#ff7300"
+                  strokeWidth={2}
+                  dot={{ r: 5 }}
+                  activeDot={{ r: 8 }}
+                  isAnimationActive={true}
+                />
+              </LineChart>
+            </ResponsiveContainer>
         </div>
+      </div>
         
-        <div className="card mt-3 bg-light">
+        {/* <div className="card mt-3 bg-light">
           <div className="card-body p-2">
-            <div className="d-flex justify-content-between align-items-center">
-              <div className="fw-bold">Weekly Total</div>
-              <div className="fs-5 text-primary">{totalReadingTime} minutes</div>
-            </div>
+            
             <div className="progress mt-2" style={{ height: "10px" }}>
               <div 
                 className="progress-bar bg-primary" 
@@ -295,8 +271,7 @@ useEffect(() => {
               <small className="text-muted">Target: 420 min</small>
             </div>
           </div>
-        </div>
-      </div>
+        </div> */}
     </div>
   );
 };

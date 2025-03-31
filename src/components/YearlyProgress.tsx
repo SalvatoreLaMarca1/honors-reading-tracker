@@ -1,7 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabase';
-// Note: This assumes you have Bootstrap CSS included in your project
-// Either via import 'bootstrap/dist/css/bootstrap.min.css'; or a CDN link
 
 interface ContributionDay {
   date: string;
@@ -14,43 +12,15 @@ interface MonthLabel {
   position: number;
 }
 
-// interface Entry {
-//   entry_id: number;
-//   created_at: string;
-//   book_id: number;
-//   minutes_read: number;
-//   pages_read: number;
-//   user_id: string;
-// }
-
 const YearlyProgress: React.FC = () => {
-  // Generate sample contribution data
-  const generateContributionData = (): Record<string, number> => {
-    const data: Record<string, number> = {};
-    const today = new Date();
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(today.getFullYear() - 1);
-    oneYearAgo.setDate(oneYearAgo.getDate() - 1); // Start one year ago from yesterday
-    
-    // Create contribution data for each day in the last year
-    for (let d = new Date(oneYearAgo); d <= today; d.setDate(d.getDate() + 1)) {
-      const dateStr = d.toISOString().split('T')[0]; // YYYY-MM-DD format
-      
-      // Randomly assign contribution levels, weighted toward 0
-      const rand = Math.random();
-      let level: number;
-      if (rand < 0.55) level = 0;      // No contributions: 55%
-      else if (rand < 0.75) level = 1; // Light: 20%
-      else if (rand < 0.90) level = 2; // Medium-light: 15%
-      else if (rand < 0.97) level = 3; // Medium: 7%
-      else level = 4;                  // Dark: 3%
-      
-      data[dateStr] = level;
-    }
-    return data;
-  };
+  const [contributionData, setContributionData] = useState<Record<string, number>>({});
+  const [selectedDay, setSelectedDay] = useState<ContributionDay | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  
+  // Get current year
+  const currentYear = new Date().getFullYear();
 
-  const getEntriesFromLastYear = async () => {
+  const getEntriesFromCurrentYear = async () => {
     // Get the current authenticated user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     
@@ -59,74 +29,110 @@ const YearlyProgress: React.FC = () => {
       return null;
     }
   
-    // Get the current date
-    const today = new Date();
-  
-    // Get the start of the last year
-    const startOfLastYear = new Date(today);
-    startOfLastYear.setFullYear(today.getFullYear() - 1);
-    startOfLastYear.setMonth(0); // Set to January (month 0)
-    startOfLastYear.setDate(1); // Set to the 1st of January
-    startOfLastYear.setHours(0, 0, 0, 0); // Set to midnight
+    // Get the start of current year (January 1st)
+    const startOfYear = new Date(currentYear, 0, 1, 0, 0, 0, 0);
     
-    // Get the end of the last year
-    const endOfLastYear = new Date(startOfLastYear);
-    endOfLastYear.setFullYear(startOfLastYear.getFullYear() + 1); // Set to next year
-    endOfLastYear.setDate(0); // Set to the last day of the previous month (December 31st)
-    endOfLastYear.setHours(23, 59, 59, 999); // Set to end of the day
-  
-    // Convert to ISO string format
-    const startDate = startOfLastYear.toISOString();
-    const endDate = endOfLastYear.toISOString();
+    // Get the end of current year (December 31st)
+    const endOfYear = new Date(currentYear, 11, 31, 23, 59, 59, 999);
   
     try {
       const { data, error } = await supabase
         .from('Entries')
         .select('*')
         .eq('user_id', user.id) // Filter by authenticated user
-        .gte('created_at', startDate) // Entries on or after startDate
-        .lte('created_at', endDate) // Entries on or before endDate
+        .gte('created_at', startOfYear.toISOString()) // Entries on or after startDate
+        .lte('created_at', endOfYear.toISOString()) // Entries on or before endDate
         .order('created_at', { ascending: false }); // Order by created_at in descending order
   
       if (error) {
         console.error('Error fetching entries:', error);
         return null;
       }
-  
-      console.log('Entries from the last year:', data);
-      return data;
+
+      // Group minutes read by date
+      const dateMinutes: Record<string, number> = {};
+      data.forEach(entry => {
+        const dateStr = entry.created_at.split('T')[0]; // Extract YYYY-MM-DD
+        dateMinutes[dateStr] = (dateMinutes[dateStr] || 0) + entry.minutes_read;
+      });
+
+      console.log("dateMinutes", dateMinutes)
+
+
+      // Generate daily contributions for the current year
+      const contributions: Record<string, number> = {};
+      for (let d = new Date(startOfYear); d <= endOfYear; d.setDate(d.getDate() + 1)) {
+        const dateStr = d.toISOString().split('T')[0]; // YYYY-MM-DD format
+        const totalMinutes = dateMinutes[dateStr] || 0;
+
+        if(dateMinutes[dateStr]) console.log(dateStr)
+
+        // Assign contribution level based on total minutes read
+        let level = 0;
+
+        // Fixed the logic to properly assign levels
+        if (totalMinutes === 0) {
+          level = 0;
+        } else if (totalMinutes <= 10) {
+          level = 1;
+        } else if (totalMinutes <= 30) {
+          level = 2;
+        } else if (totalMinutes <= 60) {
+          level = 3;
+        } else {
+          level = 4;
+        }
+
+        if(dateStr === "2025-05-21") level = 4
+
+        contributions[dateStr] = level;
+      }
+
+      console.log('Total minutes per day:', dateMinutes);
+      console.log('Contribution levels:', contributions);
+      return contributions;
     } catch (error) {
       console.error('Error fetching entries:', error);
       return null;
     }
   };
-  
-  // Call the function
-  getEntriesFromLastYear();
 
+  // Initialize data on component mount
+  useEffect(() => {
+    const initData = async () => {
+      setLoading(true);
+      const fetchedData = await getEntriesFromCurrentYear();
+      
+      if (fetchedData) {
+        setContributionData(fetchedData);
+      }
+      setLoading(false);
+    };
+    
+    initData();
+  }, []);
 
-  const [contributionData, setContributionData] = useState<Record<string, number>>(generateContributionData());
-  const [selectedDay, setSelectedDay] = useState<ContributionDay | null>(null);
-  
-  // Get weekday names and month names
-  const weekdays: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  // Get weekday names and month names// Fix the weekdays array to include all 7 days and match JavaScript's getDay() ordering
+  const weekdays: string[] = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
   const months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   
   // Generate the cells for the calendar
   const renderCalendar = (): { weeks: Array<Array<ContributionDay | null>>; monthLabels: MonthLabel[] } => {
-    const today = new Date();
-    const oneYearAgo = new Date();
-    oneYearAgo.setFullYear(today.getFullYear() - 1);
-    oneYearAgo.setDate(oneYearAgo.getDate() - 1);
+    // Start from January 1st of the current year
+    const startDate = new Date(currentYear, 0, 1);
+    // End at December 31st of the current year
+    const endDate = new Date(currentYear, 11, 31);
     
-    // Initialize with the right offset for the weekday
-    const firstSunday = new Date(oneYearAgo);
+    // Find the first Sunday before or on January 1st
+    const firstSunday = new Date(startDate);
     const dayOfWeek = firstSunday.getDay();
     firstSunday.setDate(firstSunday.getDate() - dayOfWeek);
     
     const weeks: Array<Array<ContributionDay | null>> = [];
     let currentWeek: Array<ContributionDay | null> = [];
-    const totalDays = 53 * 7; // 53 weeks for good measure
+    
+    // Calculate total days needed (up to 54 weeks to cover the full year plus padding)
+    const totalDays = 54 * 7;
     
     // Track month labels
     const monthLabels: MonthLabel[] = [];
@@ -136,9 +142,14 @@ const YearlyProgress: React.FC = () => {
       const currentDate = new Date(firstSunday);
       currentDate.setDate(firstSunday.getDate() + i);
       
-      // Check if we should add a month label
+      // Stop once we've gone past December 31st plus any days to complete the week
+      if (currentDate > endDate && currentDate.getDay() === 0) {
+        break;
+      }
+      
+      // Check if we should add a month label (only for dates in the target year)
       const month = currentDate.getMonth();
-      if (month !== lastMonth) {
+      if (month !== lastMonth && currentDate.getFullYear() === currentYear) {
         lastMonth = month;
         monthLabels.push({
           month,
@@ -148,14 +159,14 @@ const YearlyProgress: React.FC = () => {
       
       // Create the day cell
       const dateStr = currentDate.toISOString().split('T')[0];
-      const level = contributionData[dateStr] || 0;
       
-      // Only add days within our date range
-      if (currentDate >= oneYearAgo && currentDate <= today) {
+      // Only add days within our date range (the current year)
+      if (currentDate >= startDate && currentDate <= endDate) {
+        const level = contributionData[dateStr] || 0;
         currentWeek.push({
           date: dateStr,
           level,
-          tooltip: `${level} contributions on ${currentDate.toDateString()}`
+          tooltip: `${level || 'No'} contribution${level !== 1 ? 's' : ''} on ${currentDate.toDateString()}`
         });
       } else {
         currentWeek.push(null); // Placeholder for days outside our range
@@ -185,11 +196,17 @@ const YearlyProgress: React.FC = () => {
     }
   };
 
-  // Function to regenerate data (for demo purposes)
-  const regenerateData = () => {
-    setContributionData(generateContributionData());
-    setSelectedDay(null);
-  };
+  // const regenerateData = async () => {  
+  //   setLoading(true);
+  //   const fetchedData = await getEntriesFromCurrentYear();
+    
+  //   if (fetchedData) {
+  //     setContributionData(fetchedData);
+  //   } 
+
+  //   setSelectedDay(null);
+  //   setLoading(false);
+  // };
 
   // Function to handle square click
   const handleDayClick = (day: ContributionDay | null) => {
@@ -200,7 +217,7 @@ const YearlyProgress: React.FC = () => {
 
   // Calculate total contributions
   const calculateTotalContributions = (): number => {
-    return Object.values(contributionData).reduce((sum, level) => sum + level, 0);
+    return Object.values(contributionData).filter(level => level > 0).length;
   };
 
   // Custom CSS for contribution grid layout
@@ -215,20 +232,24 @@ const YearlyProgress: React.FC = () => {
     width: '12px',
     height: '12px',
     borderRadius: '2px',
-    cursor: 'pointer'
+    cursor: 'pointer',
+     border: '1px solid black'
   };
 
   return (
     <div className="card">
       <div className="card-body">
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <h5 className="card-title">{calculateTotalContributions()} contributions in the last year</h5>
-          <button 
+          <h5 className="card-title">
+            {loading ? 'Loading...' : `${calculateTotalContributions()} reading days in ${currentYear}`}
+          </h5>
+          {/* <button 
             onClick={regenerateData} 
             className="btn btn-sm btn-outline-secondary"
+            disabled={loading}
           >
-            Regenerate Data
-          </button>
+            {loading ? 'Loading...' : 'Refresh Data'}
+          </button> */}
         </div>
         
         <div className="d-flex mb-1 small text-muted">
@@ -246,9 +267,16 @@ const YearlyProgress: React.FC = () => {
         </div>
         
         <div className="d-flex">
-          <div className="me-2 small text-muted" style={{ display: 'grid', gridTemplateRows: 'repeat(7, 12px)', gap: '2px' }}>
-            {weekdays.filter((_, i) => i % 2 === 0).map((day, i) => (
-              <div key={i} className="d-flex align-items-center">
+          {/* Fixed weekday labels section */}
+          <div className="me-2 small text-muted" style={{ 
+            display: 'grid', 
+            gridTemplateRows: 'repeat(7, 12px)', 
+            gap: '2px',
+            alignItems: 'center',
+            height: '100%'
+          }}>
+            {weekdays.map((day, i) => (
+              <div key={i} style={{ fontSize: '10px', lineHeight: '12px' }}>
                 {day}
               </div>
             ))}
@@ -290,8 +318,13 @@ const YearlyProgress: React.FC = () => {
             <h6 className="mb-1">{new Date(selectedDay.date).toDateString()}</h6>
             <p className="mb-0 small text-muted">
               {selectedDay.level === 0 ? 
-                "No contributions on this day" : 
-                `${selectedDay.level} contribution${selectedDay.level > 1 ? 's' : ''} on this day`}
+                "No reading on this day" : 
+                `Reading level: ${selectedDay.level} (${
+                  selectedDay.level === 1 ? "1-10 minutes" :
+                  selectedDay.level === 2 ? "11-30 minutes" :
+                  selectedDay.level === 3 ? "31-60 minutes" :
+                  "60+ minutes"
+                })`}
             </p>
           </div>
         )}

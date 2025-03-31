@@ -20,7 +20,7 @@ export default function Login() {
             const check = await signIn(email, password)
 
             if(check) {
-                navigate('/honors-reading-tracker/dashboard')
+                navigate('/dashboard')
             }
             else
                 alert("Invalid credentials")
@@ -52,7 +52,7 @@ export default function Login() {
 
             <div className="button-cluster">
 
-                <Link to="/honors-reading-tracker/create-account">
+                <Link to="/create-account">
                     <button type="button" className="btn btn-primary btn-sm sButton">Sign Up</button>
                 </Link>
 

@@ -8,8 +8,8 @@ function ActionBar() {
 
     return (
         <div className="hold-action-buttons">
-            <button className="btn btn-primary btn-sm" onClick={() => navigate("/honors-reading-tracker/read")}>Read Book</button>
-            <button className="btn btn-primary btn-sm" onClick={() => navigate("/honors-reading-tracker/my-books")}>My Books</button>
+            <button className="btn btn-primary btn-sm" onClick={() => navigate("/read")}>Read Book</button>
+            <button className="btn btn-primary btn-sm" onClick={() => navigate("/my-books")}>My Books</button>
         </div>
     )
 }
