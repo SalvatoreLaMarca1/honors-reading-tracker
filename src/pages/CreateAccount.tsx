@@ -3,6 +3,7 @@ import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link } from 'react-router-dom';
 import { signUp } from '../supabase';
+import PreDashBar from '../components/preDashBar';
 
 
 export default function CreateAccount() {
@@ -73,41 +74,46 @@ export default function CreateAccount() {
 
 
     return (
-        <form className='login-holder'>
-            <h1>Create Account</h1>
+        <div>
+            <PreDashBar/>
 
-            <div className='form-group'>
-                <label className="text">Email</label>
-                <input type="email" onChange = {(e) => setEmail(e.target.value)} className="form-control input" placeholder='Enter email'></input>
-            </div>
 
-            <div className="spacer"/>
+            <form className='login-holder'>
+                <h1>Create Account</h1>
 
-            <div className='form-group'>
-                <label className="text">Password</label>
-                <input type='password' onChange={(e) => passwordFunctions(e.target.value)} className='form-control input' placeholder='Enter password'></input>
-                <div style={{display: 'flex', flexDirection: 'column'}}>
-
-                    <ul className ="password-requirements">
-                        <li id="uppercase">1 Uppercase Character</li>
-                        <li id="special">1 Special Character</li>
-                        <li id="numeric">1 Numeric Character</li>
-                    </ul>
-
+                <div className='form-group'>
+                    <label className="text">Email</label>
+                    <input type="email" onChange = {(e) => setEmail(e.target.value)} className="form-control input" placeholder='Enter email'></input>
                 </div>
-            </div>
 
-            <div className='spacer'/>
+                <div className="spacer"/>
 
-            <div style={{width: 300}} className="button-cluster">
+                <div className='form-group'>
+                    <label className="text">Password</label>
+                    <input type='password' onChange={(e) => passwordFunctions(e.target.value)} className='form-control input' placeholder='Enter password'></input>
+                    <div>
 
-                <Link to="/login">
-                     <button type="button" className="btn btn-primary btn-sm sButton">Already have an account?</button>
-                </Link>
+                        <ul className ="password-requirements">
+                            <li id="uppercase">1 Uppercase Character</li>
+                            <li id="special">1 Special Character</li>
+                            <li id="numeric">1 Numeric Character</li>
+                        </ul>
 
-               
-                <button type='button' onClick={() => isValidAccount(email, password)} className="btn btn-primary btn-sm sButton">Create Account</button>
-            </div>
-        </form>
+                    </div>
+                </div>
+
+                <div className='spacer'/>
+
+                <div  className="button-cluster">
+
+                    <Link to="/login">
+                        <button type="button" className="btn btn-primary btn-sm sButton">Already have an account?</button>
+                    </Link>
+
+                
+                    <button type='button' onClick={() => isValidAccount(email, password)} className="btn btn-primary btn-sm sButton">Create Account</button>
+                </div>
+            </form>
+       </div>
     )
 }

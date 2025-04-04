@@ -2,6 +2,7 @@
 import {useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { signIn} from '../supabase';
+import PreDashBar from '../components/preDashBar';
 
 export default function Login() {
 
@@ -32,33 +33,36 @@ export default function Login() {
     }
 
     return (
+        <div >
+            <PreDashBar/>
 
-        <form className='login-holder'>
-            <h1>Log in</h1>
+            <form className='login-holder'>
+                <h1>Log in</h1>
 
-            <div className='form-group'>
-                <label className="text">Email</label>
-                <input id="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="form-control input" placeholder='Enter email'></input>
-            </div>
+                <div className='form-group'>
+                    <label className="text">Email</label>
+                    <input id="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="form-control input" placeholder='Enter email'></input>
+                </div>
 
-            <div className="spacer"/>
+                <div className="spacer"/>
 
-            <div className='form-group'>
-                <label className="text">Password</label>
-                <input id="password" value={password} onChange={(e) => setPassword(e.target.value)} type='password' className='form-control input' placeholder='Enter password'></input>
-            </div>
+                <div className='form-group'>
+                    <label className="text">Password</label>
+                    <input id="password" value={password} onChange={(e) => setPassword(e.target.value)} type='password' className='form-control input' placeholder='Enter password'></input>
+                </div>
 
-            <div className='spacer'/>
+                <div className='spacer'/>
 
-            <div className="button-cluster">
+                <div className="button-cluster">
 
-                <Link to="/create-account">
-                    <button type="button" className="btn btn-primary btn-sm sButton">Sign Up</button>
-                </Link>
+                    <Link to="/create-account">
+                        <button type="button" className="btn btn-primary btn-sm sButton">Sign Up</button>
+                    </Link>
 
-                
-                <button type="button" onClick={() => {isValidUser(email, password)}} className="btn btn-primary btn-sm sButton">Log in</button>
-            </div>
-        </form>
+                    
+                    <button type="button" onClick={() => {isValidUser(email, password)}} className="btn btn-primary btn-sm sButton">Log in</button>
+                </div>
+            </form>
+        </div>
     )
 }

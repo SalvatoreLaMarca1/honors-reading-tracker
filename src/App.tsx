@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import MyBooks from './pages/MyBooks';
 import Read from './pages/Read';
 import NavBar from './components/NavBar';
+import About from './pages/About'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/my-books" element={<MyBooks />} />
         <Route path="/read" element={<Read />} />
+        <Route path="/about" element={<About/>}/>
       </Routes>
     </BrowserRouter>
   );
@@ -30,11 +32,12 @@ const NavBarWrapper = () => {
   const isLandingPage = location.pathname === '/';
   const isLogin = location.pathname === '/login';
   const isCreateAccount = location.pathname === '/create-account';
+  const isAbout = location.pathname === '/about'
 
   // Render NavBar only if not on Landing, Login, or Create Account pages
   return (
     <>
-      {!(isLandingPage || isLogin || isCreateAccount) && <NavBar />} {/* Hide NavBar on specific pages */}
+      {!(isLandingPage || isLogin || isCreateAccount || isAbout) && <NavBar />} {/* Hide NavBar on specific pages */}
     </>
   );
 };
