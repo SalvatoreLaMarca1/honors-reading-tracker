@@ -56,16 +56,11 @@ const YearlyProgress: React.FC = () => {
         dateMinutes[dateStr] = (dateMinutes[dateStr] || 0) + entry.minutes_read;
       });
 
-      console.log("dateMinutes", dateMinutes)
-
-
       // Generate daily contributions for the current year
       const contributions: Record<string, number> = {};
       for (let d = new Date(startOfYear); d <= endOfYear; d.setDate(d.getDate() + 1)) {
         const dateStr = d.toISOString().split('T')[0]; // YYYY-MM-DD format
         const totalMinutes = dateMinutes[dateStr] || 0;
-
-        if(dateMinutes[dateStr]) console.log(dateStr)
 
         // Assign contribution level based on total minutes read
         let level = 0;
@@ -83,13 +78,9 @@ const YearlyProgress: React.FC = () => {
           level = 4;
         }
 
-        if(dateStr === "2025-05-21") level = 4
-
         contributions[dateStr] = level;
       }
 
-      console.log('Total minutes per day:', dateMinutes);
-      console.log('Contribution levels:', contributions);
       return contributions;
     } catch (error) {
       console.error('Error fetching entries:', error);
@@ -112,7 +103,7 @@ const YearlyProgress: React.FC = () => {
     initData();
   }, []);
 
-  // Get weekday names and month names// Fix the weekdays array to include all 7 days and match JavaScript's getDay() ordering
+  // Get weekday names and month names
   const weekdays: string[] = ['Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
   const months: string[] = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   
@@ -184,29 +175,17 @@ const YearlyProgress: React.FC = () => {
   
   const { weeks, monthLabels } = renderCalendar();
   
-  // Get color for contribution level using bootstrap classes
+  // Get color for contribution level with dark blue theme colors
   const getLevelColor = (level: number): string => {
     switch (level) {
-      case 0: return 'bg-light';
-      case 1: return 'bg-dark bg-opacity-25';
-      case 2: return 'bg-dark bg-opacity-50';
-      case 3: return 'bg-dark bg-opacity-75';
-      case 4: return 'bg-dark';
-      default: return 'bg-light';
+      case 0: return 'rgba(255, 255, 255, 0.05)';    // Very light
+      case 1: return 'rgba(97, 218, 251, 0.25)';     // Light blue
+      case 2: return 'rgba(97, 218, 251, 0.5)';      // Medium blue
+      case 3: return 'rgba(97, 218, 251, 0.75)';     // Dark blue
+      case 4: return 'rgba(97, 218, 251, 1)';        // Full blue
+      default: return 'rgba(255, 255, 255, 0.05)';
     }
   };
-
-  // const regenerateData = async () => {  
-  //   setLoading(true);
-  //   const fetchedData = await getEntriesFromCurrentYear();
-    
-  //   if (fetchedData) {
-  //     setContributionData(fetchedData);
-  //   } 
-
-  //   setSelectedDay(null);
-  //   setLoading(false);
-  // };
 
   // Function to handle square click
   const handleDayClick = (day: ContributionDay | null) => {
@@ -220,115 +199,138 @@ const YearlyProgress: React.FC = () => {
     return Object.values(contributionData).filter(level => level > 0).length;
   };
 
-  // Custom CSS for contribution grid layout
-  const gridStyle = {
-    display: 'grid',
-    gridTemplateRows: 'repeat(7, 12px)',
-    gridAutoFlow: 'column',
-    gap: '2px'
-  };
-
-  const cellStyle = {
-    width: '12px',
-    height: '12px',
-    borderRadius: '2px',
-    cursor: 'pointer',
-     border: '1px solid black'
-  };
-
   return (
-    <div className="card">
-      <div className="card-body">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <h5 className="card-title">
-            {loading ? 'Loading...' : `${calculateTotalContributions()} reading days in ${currentYear}`}
-          </h5>
-          {/* <button 
-            onClick={regenerateData} 
-            className="btn btn-sm btn-outline-secondary"
-            disabled={loading}
+    <div className="weekly-graph-box" style={{
+      background: 'linear-gradient(145deg, #2c3e50, #1a2533)',
+      boxShadow: '0 15px 50px rgba(0, 0, 0, 0.3)',
+      width: '100%',
+      padding: '25px',
+      height: 'auto'
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <h5 style={{ color: 'white', margin: 0, fontWeight: 600, fontSize: '18px' }}>
+          {loading ? 'Loading...' : `${calculateTotalContributions()} reading days in ${currentYear}`}
+        </h5>
+      </div>
+      
+      <div style={{ display: 'flex', marginBottom: '8px', paddingLeft: '20px' }}>
+        {monthLabels.map((label, i) => (
+          <div 
+            key={i} 
+            style={{ 
+              marginLeft: i === 0 ? `${label.position * 14}px` : '0',
+              fontSize: '12px',
+              color: '#e0e0e0',
+              opacity: 0.7,
+              flexGrow: 1
+            }}
           >
-            {loading ? 'Loading...' : 'Refresh Data'}
-          </button> */}
-        </div>
-        
-        <div className="d-flex mb-1 small text-muted">
-          {monthLabels.map((label, i) => (
-            <div 
-              key={i} 
-              className="flex-grow-1" 
-              style={{ 
-                marginLeft: i === 0 ? `${label.position * 14}px` : '0'
-              }}
-            >
-              {months[label.month]}
+            {months[label.month]}
+          </div>
+        ))}
+      </div>
+      
+      <div style={{ display: 'flex' }}>
+        {/* Weekday labels */}
+        <div style={{ 
+          marginRight: '10px',
+          display: 'grid', 
+          gridTemplateRows: 'repeat(7, 12px)', 
+          gap: '2px',
+          alignItems: 'center'
+        }}>
+          {weekdays.map((day, i) => (
+            <div key={i} style={{ fontSize: '10px', lineHeight: '12px', color: '#e0e0e0', opacity: 0.7 }}>
+              {day}
             </div>
           ))}
         </div>
         
-        <div className="d-flex">
-          {/* Fixed weekday labels section */}
-          <div className="me-2 small text-muted" style={{ 
-            display: 'grid', 
-            gridTemplateRows: 'repeat(7, 12px)', 
-            gap: '2px',
-            alignItems: 'center',
-            height: '100%'
-          }}>
-            {weekdays.map((day, i) => (
-              <div key={i} style={{ fontSize: '10px', lineHeight: '12px' }}>
-                {day}
+        <div style={{ overflowX: 'auto' }}>
+          <div style={{ display: 'flex' }}>
+            {weeks.map((week, weekIndex) => (
+              <div key={weekIndex} style={{ 
+                display: 'grid',
+                gridTemplateRows: 'repeat(7, 12px)',
+                gridAutoFlow: 'column',
+                gap: '2px'
+              }}>
+                {week.map((day, dayIndex) => (
+                  <div 
+                    key={dayIndex}
+                    style={{ 
+                      width: '12px',
+                      height: '12px',
+                      borderRadius: '2px',
+                      cursor: 'pointer',
+                      backgroundColor: day ? getLevelColor(day.level) : 'transparent',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      transition: 'all 0.2s ease'
+                    }}
+                    title={day ? day.tooltip : ''}
+                    onClick={() => handleDayClick(day)}
+                  />
+                ))}
               </div>
             ))}
           </div>
-          
-          <div style={{ overflowX: 'auto' }}>
-            <div className="d-flex">
-              {weeks.map((week, weekIndex) => (
-                <div key={weekIndex} style={gridStyle}>
-                  {week.map((day, dayIndex) => (
-                    <div 
-                      key={dayIndex}
-                      className={`${day ? getLevelColor(day.level) : ''}`}
-                      style={cellStyle}
-                      data-bs-toggle="tooltip"
-                      data-bs-placement="top"
-                      title={day ? day.tooltip : ''}
-                      onClick={() => handleDayClick(day)}
-                    />
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
-        
-        <div className="mt-3 d-flex align-items-center small text-muted">
-          <span className="me-1">Less</span>
-          <div className={`${getLevelColor(0)}`} style={{ width: '12px', height: '12px', borderRadius: '2px' }}></div>
-          <div className={`${getLevelColor(1)} ms-1`} style={{ width: '12px', height: '12px', borderRadius: '2px' }}></div>
-          <div className={`${getLevelColor(2)} ms-1`} style={{ width: '12px', height: '12px', borderRadius: '2px' }}></div>
-          <div className={`${getLevelColor(3)} ms-1`} style={{ width: '12px', height: '12px', borderRadius: '2px' }}></div>
-          <div className={`${getLevelColor(4)} ms-1`} style={{ width: '12px', height: '12px', borderRadius: '2px' }}></div>
-          <span className="ms-1">More</span>
-        </div>
-        
-        {selectedDay && (
-          <div className="mt-3 p-3 bg-light border rounded">
-            <h6 className="mb-1">{new Date(selectedDay.date).toDateString()}</h6>
-            <p className="mb-0 small text-muted">
-              {selectedDay.level === 0 ? 
-                "No reading on this day" : 
-                `Reading level: ${selectedDay.level} (${
-                  selectedDay.level === 1 ? "1-10 minutes" :
-                  selectedDay.level === 2 ? "11-30 minutes" :
-                  selectedDay.level === 3 ? "31-60 minutes" :
-                  "60+ minutes"
-                })`}
-            </p>
-          </div>
-        )}
       </div>
+      
+      <div style={{ 
+        marginTop: '15px', 
+        display: 'flex', 
+        alignItems: 'center',
+        fontSize: '12px',
+        color: '#e0e0e0',
+        opacity: 0.7
+      }}>
+        <span style={{ marginRight: '5px' }}>Less</span>
+        {[0, 1, 2, 3, 4].map((level) => (
+          <div 
+            key={level}
+            style={{ 
+              width: '12px', 
+              height: '12px', 
+              borderRadius: '2px',
+              backgroundColor: getLevelColor(level),
+              marginLeft: level > 0 ? '5px' : '0',
+              border: '1px solid rgba(255, 255, 255, 0.1)'
+            }}
+          />
+        ))}
+        <span style={{ marginLeft: '5px' }}>More</span>
+      </div>
+      
+      {selectedDay && (
+        <div style={{ 
+          marginTop: '20px', 
+          padding: '15px', 
+          backgroundColor: 'rgba(255, 255, 255, 0.05)',
+          borderRadius: '15px',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)'
+        }}>
+          <h6 style={{ marginBottom: '8px', color: 'white', fontWeight: 500 }}>
+            {new Date(selectedDay.date).toDateString()}
+          </h6>
+          <p style={{ 
+            marginBottom: '0', 
+            fontSize: '14px', 
+            color: '#e0e0e0',
+            opacity: 0.8
+          }}>
+            {selectedDay.level === 0 ? 
+              "No reading on this day" : 
+              `Reading level: ${selectedDay.level} (${
+                selectedDay.level === 1 ? "1-10 minutes" :
+                selectedDay.level === 2 ? "11-30 minutes" :
+                selectedDay.level === 3 ? "31-60 minutes" :
+                "60+ minutes"
+              })`}
+          </p>
+        </div>
+      )}
     </div>
   );
 };
