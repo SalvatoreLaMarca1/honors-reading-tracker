@@ -174,9 +174,6 @@ const WeeklyGraph = () => {
     return `${weekOffset} ${weekOffset === 1 ? 'Week' : 'Weeks'} Ahead`;
   };
 
-  const totalReadingTime = chartData.reduce((sum, item) => sum + item.minutes, 0);
-  const totalPagesRead = chartData.reduce((sum, item) => sum + item.pages, 0);
-
   // Custom styling for the chart
   const customTooltipStyle = {
     backgroundColor: 'rgba(26, 37, 51, 0.9)',
@@ -193,7 +190,7 @@ const WeeklyGraph = () => {
         <div style={customTooltipStyle}>
           <p className="fw-bold mb-2">{label}</p>
           <p style={{ color: '#61dafb' }}>{`Minutes: ${payload[0].value}`}</p>
-          <p style={{ color: '#ff7300' }}>{`Pages: ${payload[1].value}`}</p>
+          <p style={{ color: '#3F51B5' }}>{`Pages: ${payload[1].value}`}</p>
         </div>
       );
     }
@@ -337,49 +334,15 @@ const WeeklyGraph = () => {
               <Line
                 type="monotone"
                 dataKey="pages"
-                stroke="#ff7300"
+                stroke="#3F51B5"
                 strokeWidth={2}
-                dot={{ r: 5, fill: '#ff7300', strokeWidth: 0 }}
-                activeDot={{ r: 8, fill: '#ff7300', stroke: '#fff' }}
+                dot={{ r: 5, fill: '#3F51B5', strokeWidth: 0 }}
+                activeDot={{ r: 8, fill: '#3F51B5', stroke: '#fff' }}
                 isAnimationActive={true}
                 name="Pages Read"
               />
             </LineChart>
           </ResponsiveContainer>
-        </div>
-
-        <div style={{ 
-          padding: '15px 20px', 
-          borderRadius: '15px', 
-          background: 'rgba(44, 62, 80, 0.7)',
-          border: '1px solid rgba(97, 218, 251, 0.2)',
-          marginBottom: '10px'
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
-            <span style={{ color: '#ecf0f1', fontWeight: 500 }}>Weekly Summary</span>
-            <span style={{ color: '#61dafb', fontWeight: 600 }}>{totalReadingTime} minutes</span>
-          </div>
-          <div style={{ 
-            height: '8px', 
-            background: 'rgba(236, 240, 241, 0.1)', 
-            borderRadius: '4px', 
-            marginBottom: '8px', 
-            overflow: 'hidden' 
-          }}>
-            <div 
-              style={{ 
-                width: `${Math.min(100, (totalReadingTime / 420) * 100)}%`,
-                height: '100%',
-                background: 'linear-gradient(90deg, #61dafb, #3498db)',
-                borderRadius: '4px',
-                transition: 'width 1s ease-in-out'
-              }}
-            />
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
-            <span style={{ color: '#aaa' }}>Goal: 420 min</span>
-            <span style={{ color: '#aaa' }}>{totalPagesRead} pages read</span>
-          </div>
         </div>
       </div>
     </div>

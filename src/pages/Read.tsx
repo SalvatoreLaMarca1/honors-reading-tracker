@@ -223,13 +223,6 @@ function Read() {
             >
               {isRunning ? 'Pause' : 'Resume'}
             </button>
-            
-            <button 
-              className="btn btn-outline-secondary" 
-              onClick={() => setShowModal(true)}
-            >
-              Change Book
-            </button>
           </div>
         </div>
       </div>

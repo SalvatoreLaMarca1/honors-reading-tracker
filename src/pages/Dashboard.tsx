@@ -10,7 +10,6 @@ function Dashboard() {
       <div className="dasboard-div">
         <YearlyProgress/>
         <WeeklyGraph/>
-        {/* <ActionBar/> */}
       </div>
     </>
   )
