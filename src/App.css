@@ -24,12 +24,12 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif !important;
+  font-family: 'Poppins', sans-serif;
+
 }
 
 /* Navigation Bar */
 .bar {
-  font-family: 'Poppins', sans-serif;
   position: fixed;
   top: 20px;
   left: 50%;
@@ -109,8 +109,6 @@
   overflow: hidden;
   position: relative;
 }
-
-
 
 .main-section::before {
   content: '';
@@ -355,11 +353,11 @@
 /* Login CSS */
 
 h1 {
-  color: #DCD7C9 !important;
+  color: white !important;
 }
 
 .text {
-  color: #DCD7C9;
+  color: white;
   width:fit-content;
 }
 
@@ -686,4 +684,76 @@ h1 {
 
 .text-primary {
   color: #61dafb !important;
+}
+
+/* About.tsx */
+.about-area {
+  min-width: 70%;
+  min-height: 600px;
+  background-color: white;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  gap: 50px;
+  background: linear-gradient(145deg, #2c3e50, #1a2533);
+  overflow: hidden;
+  position: relative;
+}
+
+.about-area::before {
+  content: '';
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  background: rgba(97, 218, 251, 0.1);
+  top: -100px;
+  right: -100px;
+  z-index: 0;
+}
+
+.about-area::after {
+  content: '';
+  position: absolute;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(3, 5, 5, 0.05);
+  bottom: -50px;
+  left: -50px;
+  z-index: 0;
+}
+
+.image-container {
+  width: max-content;  
+  height: 400px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit:contain;
+  border-radius: 30px;
+  z-index: 1;
+}
+
+.about-text-area {
+  width: 50%;
+  height: 400px;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+
+.about-text {
+  color: white;
+  min-width: 300px;
+  font-size: x-large;
 }

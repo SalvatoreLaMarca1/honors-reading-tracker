@@ -7,7 +7,7 @@ function PreDashBar() {
     return (
         <>
         <div className="bar">
-                <h1 onClick={() => navigate("/")} className="logo">Read Now</h1>
+                <h1 onClick={() => navigate("/")} className="logo"><u>Read Now</u></h1>
                 <div className="right-cluster">
                     <h5 onClick={() => navigate("/login")} className="nav-btn">Log In</h5>
                     <h5 onClick={() => navigate("/create-account")} className="nav-btn">Sign Up</h5>
