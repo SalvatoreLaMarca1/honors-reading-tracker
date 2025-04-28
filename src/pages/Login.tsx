@@ -2,7 +2,7 @@
 import {useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { signIn} from '../supabase';
-import PreDashBar from '../components/PreDashBar';
+import PreDashBar from '../components/preDashBar';
 
 export default function Login() {
     const navigate = useNavigate()

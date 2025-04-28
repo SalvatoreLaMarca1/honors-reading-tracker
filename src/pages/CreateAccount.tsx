@@ -3,7 +3,7 @@ import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link } from 'react-router-dom';
 import { signUp } from '../supabase';
-import PreDashBar from '../components/PreDashBar';
+import PreDashBar from '../components/preDashBar';
 
 
 export default function CreateAccount() {

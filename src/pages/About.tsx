@@ -1,6 +1,6 @@
 
 import "../App.css"
-import PreDashBar from "../components/PreDashBar"
+import PreDashBar from "../components/preDashBar"
 import salImage from "../assets/salimage.jpeg"
 
 function About() {

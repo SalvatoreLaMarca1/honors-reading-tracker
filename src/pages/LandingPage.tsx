@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import PreDashBar from '../components/PreDashBar';
+import PreDashBar from '../components/preDashBar';
 
 
 function LandingPage() {
