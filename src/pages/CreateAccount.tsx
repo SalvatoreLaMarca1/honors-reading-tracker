@@ -3,7 +3,7 @@ import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Link } from 'react-router-dom';
 import { signUp } from '../supabase';
-import PreDashBar from '../components/preDashBar';
+import PreDashBar from '../components/PreDashBar';
 
 
 export default function CreateAccount() {
@@ -26,8 +26,6 @@ export default function CreateAccount() {
      * Checks to see if the password follows rules
      */
     const checkPassword = (p: string) => {
-
-
         const numeric = document.getElementById("numeric")
         const special = document.getElementById("special")
         const upper = document.getElementById("uppercase")
@@ -76,8 +74,6 @@ export default function CreateAccount() {
     return (
         <div>
             <PreDashBar/>
-
-
             <form className='login-holder'>
                 <h1>Create Account</h1>
 
@@ -92,16 +88,13 @@ export default function CreateAccount() {
                     <label className="text">Password</label>
                     <input type='password' onChange={(e) => passwordFunctions(e.target.value)} className='form-control input' placeholder='Enter password'></input>
                     <div>
-
                         <ul className ="password-requirements">
                             <li id="uppercase">1 Uppercase Character</li>
                             <li id="special">1 Special Character</li>
                             <li id="numeric">1 Numeric Character</li>
                         </ul>
-
                     </div>
                 </div>
-
                 <div className='spacer'/>
 
                 <div  className="button-cluster">
@@ -109,8 +102,6 @@ export default function CreateAccount() {
                     <Link to="/login">
                         <button type="button" className="btn btn-primary btn-sm sButton">Already have an account?</button>
                     </Link>
-
-                
                     <button type='button' onClick={() => isValidAccount(email, password)} className="btn btn-primary btn-sm sButton">Create Account</button>
                 </div>
             </form>

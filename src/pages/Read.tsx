@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import "../App.css";
 import { useNavigate } from "react-router-dom";
 import { Modal, Button } from 'react-bootstrap';
-import { addEntry, getAllBooks } from "../supabase"; // Adjust import path as needed
-import PagesReadModal from "../components/PagesReadModal"; // Adjust import path as needed
+import { addEntry, getAllBooks } from "../supabase"; 
+import PagesReadModal from "../components/PagesReadModal"; 
 
 interface Book {
   book_id: number;
@@ -83,8 +83,6 @@ function Read() {
     const minutesRead = Math.round(seconds / 60);
 
     setShowPagesModal(true);
-
-    // addEntry(selectedBook.book_id, minutesRead, pagesRead);
     
     console.log(`Finished reading "${selectedBook.title}" for ${minutesRead} minutes`);
     
@@ -234,7 +232,6 @@ function Read() {
           </p>
         </div>
       )}
-
 
       <PagesReadModal 
         show={showPagesModal} 

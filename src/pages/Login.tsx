@@ -2,12 +2,9 @@
 import {useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { signIn} from '../supabase';
-import PreDashBar from '../components/preDashBar';
+import PreDashBar from '../components/PreDashBar';
 
 export default function Login() {
-
-
-
     const navigate = useNavigate()
     
     const [email, setEmail] = useState("");
@@ -16,8 +13,6 @@ export default function Login() {
     const isValidUser = async (email: string, password: string) => {
 
         try {
-            //const check = await checkCredentials(email, password)
-
             const check = await signIn(email, password)
 
             if(check) {
@@ -58,8 +53,6 @@ export default function Login() {
                     <Link to="/create-account">
                         <button type="button" className="btn btn-primary btn-sm sButton">Sign Up</button>
                     </Link>
-
-                    
                     <button type="button" onClick={() => {isValidUser(email, password)}} className="btn btn-primary btn-sm sButton">Log in</button>
                 </div>
             </form>

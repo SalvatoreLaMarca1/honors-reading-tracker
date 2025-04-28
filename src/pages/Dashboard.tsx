@@ -1,6 +1,5 @@
 
 import WeeklyGraph from "../components/WeeklyGraph"
-// import ActionBar from "../components/ActionBar"
 import YearlyProgress from "../components/YearlyProgress"
 
 function Dashboard() {
