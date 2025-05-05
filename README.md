@@ -1,3 +1,13 @@
+# Read Now 
+
+Read Now was created to provide an excellent user experience that allows users to track their reading habits. The user can add books, collect reading time, and analyze their statistics. This project was built as a realistic example of software design, development, and execution to fulfill my honors capstone project for Commonwealth University - Bloomsburg Campus in the Spring of 2025. 
+
+# Tech Stack
+Frontend: TypeScript + React Project
+Backend: TypeScript
+Database: Supabase Postgres Relational database
+Authentication: Supabase Authentication 
+
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
